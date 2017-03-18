@@ -2,13 +2,14 @@
 var express = require('express')
 var app = express()
 var useragent = require('useragent');
+var getIP = require('ipware')().get_ip;
 
 app.get('/', function (req, res) {
   console.log('Hello World!')
   res.send('Hello World!')
 })
 app.get('/api/whoami', function (req, res) {
-   var ip_addres = req.connection.remoteAddress.split(':').slice(-1);    
+   //var ip_addres = req.connection.remoteAddress.split(':').slice(-1);    
   //console.log( ip_addres )
   var lang = req.headers["accept-language"].split(','); 
   //console.log( lang[0] );
@@ -16,10 +17,12 @@ app.get('/api/whoami', function (req, res) {
   var agent = useragent.parse(req.headers['user-agent']);
   var software =  agent.os.toString();
   //console.log( agent.os.toString() );  // 'Mac OSX 10.8.1'
+  var ipInfo = getIP(req).clientIp;
+  //console.log(ipInfo);
+
   
   
-  
-  var obj =  JSON.stringify( {"ipaddress":ip_addres[0], "language":lang[0], "software":software})
+  var obj =  JSON.stringify( {"ipaddress":ipInfo, "language":lang[0], "software":software})
   
   console.log('whoami reqwest!')
   console.log(obj)
